@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gen-read-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gen-read
+  template:
+    metadata:
+      labels:
+        app: gen-read
+    spec:
+      volumes:
+        - name: shared-folder
+          emptyDir: {}
+      containers:
+        - name: gen
+          image: dhanusaputra/gen
+          volumeMounts:
+          - name: shared-folder
+            mountPath: /shared
+        - name: read
+          image: dhanusaputra/read
+          volumeMounts:
+          - name: shared-folder
+            mountPath: /shared
