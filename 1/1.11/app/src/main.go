@@ -19,7 +19,7 @@ func main() {
 	http.HandleFunc("/ping", pingHandler)
 	http.HandleFunc("/random", randomHandler)
 
-	log.Println("Starting server at port 8080")
+	log.Println("Starting server at port 5000")
 	log.Fatal(http.ListenAndServe(":5000", nil))
 }
 
@@ -41,6 +41,7 @@ func randomHandler(w http.ResponseWriter, r *http.Request) {
     log.Println(err)
     b = []byte("0")
   }
-  fmt.Fprintf(w, "%s: %s\nPing/ Pongs: %s", time.Now().Format(time.RFC3339), random, string(b))
+  fmt.Fprintf(w, "%s: %s\n", time.Now().Format(time.RFC3339), random)
+  fmt.Fprintf(w, "Ping / Pongs: %s", string(b))
 }
 
