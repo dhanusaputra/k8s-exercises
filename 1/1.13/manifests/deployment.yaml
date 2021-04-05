@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pingpong-read-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pingpong-read
+  template:
+    metadata:
+      labels:
+        app: pingpong-read
+    spec:
+      volumes:
+        - name: shared-folder
+          persistentVolumeClaim:
+            claimName: project-claim
+      containers:
+        - name: gen-pingpong
+          image: dhanusaputra/gen-pingpong
+          volumeMounts:
+          - name: shared-folder
+            mountPath: /shared
+        - name: read-pingpong
+          image: dhanusaputra/read-pingpong
+          volumeMounts:
+          - name: shared-folder
+            mountPath: /shared
