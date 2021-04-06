@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: main-pingpong
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: main-pingpong
+  template:
+    metadata:
+      labels:
+        app: main-pingpong
+    spec:
+      containers:
+        - name: main-app
+          image: dhanusaputra/main-app
+        - name: pingpong-app
+          image: dhanusaputra/pingpong-app
