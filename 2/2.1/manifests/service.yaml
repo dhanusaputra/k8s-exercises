@@ -1,12 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: project
+  name: pingpong-app
 spec:
   type: ClusterIP
   selector:
-    app: project
+    app: pingpong-app
   ports:
-    - protocol: TCP
-      port: 1234
+    - name: http
+      protocol: TCP
+      port: 80
       targetPort: 8080
