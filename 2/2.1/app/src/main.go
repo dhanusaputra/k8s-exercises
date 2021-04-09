@@ -2,17 +2,17 @@ package main
 
 import (
 	"crypto/md5"
+	"errors"
 	"fmt"
+	"io/ioutil"
 	"log"
-  "io/ioutil"
 	"net/http"
+	"strings"
 	"time"
-  "strings"
-  "errors"
 )
 
 var (
-	random  string
+	random string
 )
 
 func main() {
@@ -27,7 +27,7 @@ func main() {
 
 func pingHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
-    http.Error(w, "method is not supported", http.StatusMethodNotAllowed)
+		http.Error(w, "method is not supported", http.StatusMethodNotAllowed)
 		return
 	}
 	fmt.Fprintf(w, "pong")
@@ -38,28 +38,28 @@ func randomHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "method is not supported", http.StatusMethodNotAllowed)
 		return
 	}
-  fmt.Fprintf(w, "%s: %s\n", time.Now().Format(time.RFC3339), random)
-  pong, err := getPong("http://pingpong-app:8080/pingpong")
-  if err != nil {
+	fmt.Fprintf(w, "%s: %s\n", time.Now().Format(time.RFC3339), random)
+	pong, err := getPong("http://pingpong-app:8080/pingpong")
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
-    return
-  }
-  fmt.Fprintf(w, "Ping / Pongs: %s", pong)
+		return
+	}
+	fmt.Fprintf(w, "Ping / Pongs: %s", pong)
 }
 
 func getPong(url string) (string, error) {
-  resp, err := http.Get(url)
-  if err != nil {
-    return "", err
-  }
-  defer resp.Body.Close()
-  body, err := ioutil.ReadAll(resp.Body)
-  if err != nil {
-    return "", err
-  }
-  bodies := strings.Fields(string(body))
-  if len(bodies) != 2 {
-    return "", errors.New("invalid response format")
-  }
-  return bodies[1], nil
+	resp, err := http.Get(url)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+	bodies := strings.Fields(string(body))
+	if len(bodies) != 2 {
+		return "", errors.New("invalid response format")
+	}
+	return bodies[1], nil
 }

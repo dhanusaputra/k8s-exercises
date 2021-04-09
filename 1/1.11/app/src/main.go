@@ -3,14 +3,14 @@ package main
 import (
 	"crypto/md5"
 	"fmt"
+	"io/ioutil"
 	"log"
-  "io/ioutil"
 	"net/http"
 	"time"
 )
 
 var (
-	random  string
+	random string
 )
 
 func main() {
@@ -36,12 +36,11 @@ func randomHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "method is not supported", http.StatusNotFound)
 		return
 	}
-  b, err := ioutil.ReadFile("./shared/test")
-  if err != nil {
-    log.Println(err)
-    b = []byte("0")
-  }
-  fmt.Fprintf(w, "%s: %s\n", time.Now().Format(time.RFC3339), random)
-  fmt.Fprintf(w, "Ping / Pongs: %s", string(b))
+	b, err := ioutil.ReadFile("./shared/test")
+	if err != nil {
+		log.Println(err)
+		b = []byte("0")
+	}
+	fmt.Fprintf(w, "%s: %s\n", time.Now().Format(time.RFC3339), random)
+	fmt.Fprintf(w, "Ping / Pongs: %s", string(b))
 }
-

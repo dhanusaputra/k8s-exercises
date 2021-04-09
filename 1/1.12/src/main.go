@@ -23,13 +23,13 @@ func imageHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-  data, err := getImage("https://picsum.photos/1200")
+	data, err := getImage("https://picsum.photos/1200")
 	if err != nil {
 		http.Error(w, fmt.Sprintf("failed when get image, err: %v", err), http.StatusInternalServerError)
 		return
 	}
 
-  imageData = data
+	imageData = data
 
 	fmt.Fprint(w, imageData)
 }

@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"log"
 	"net/http"
-	"strconv"
+	"os"
 	"path/filepath"
+	"strconv"
 )
 
 var (
