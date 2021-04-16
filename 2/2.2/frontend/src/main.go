@@ -14,8 +14,8 @@ func main() {
 	http.HandleFunc("/", handler)
 	http.Handle("/assets/", http.FileServer(http.Dir("./shared")))
 
-	log.Println("Starting server at port 8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Println("Starting server at port 8081")
+	log.Fatal(http.ListenAndServe(":8081", nil))
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
