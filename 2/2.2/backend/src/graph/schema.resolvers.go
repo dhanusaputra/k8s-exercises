@@ -5,18 +5,25 @@ package graph
 
 import (
 	"context"
-	"fmt"
+	"strconv"
 
 	"github.com/dhanusaputra/k8s-exercises/graph/generated"
 	"github.com/dhanusaputra/k8s-exercises/graph/model"
 )
 
 func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-	panic(fmt.Errorf("not implemented"))
+	newLastID := r.lastID + 1
+	todo := &model.Todo{
+		Text: input.Text,
+		ID:   strconv.Itoa(newLastID),
+	}
+	r.todos = append(r.todos, todo)
+	r.lastID = newLastID
+	return todo, nil
 }
 
 func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	panic(fmt.Errorf("not implemented"))
+	return r.todos, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.

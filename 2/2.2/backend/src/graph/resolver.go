@@ -4,4 +4,12 @@ package graph
 //
 // It serves as dependency injection for your app, add any dependencies you require here.
 
-type Resolver struct{}
+import (
+	"github.com/dhanusaputra/k8s-exercises/graph/model"
+)
+
+// Resolver ...
+type Resolver struct {
+	todos  []*model.Todo
+	lastID int
+}
