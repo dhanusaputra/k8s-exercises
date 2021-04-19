@@ -7,8 +7,9 @@
       <input type='submit' value='Create TODO'>
     </form>
     <ul>
-      <li>TODO 1</li>
-      <li>TODO 2</li>
+      {{range $i, $v := .Todos}}
+        <li>{{$v.Text}}</li>
+      {{end}}
     </ul>
   </body>
 </html>

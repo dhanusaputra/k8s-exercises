@@ -38,7 +38,7 @@ func main() {
 	http.HandleFunc("/", handler)
 	http.HandleFunc("/submit", submitHandler)
 
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./shared"))))
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
 
 	log.Println("Starting server at port 3000")
 	log.Fatal(http.ListenAndServe(":3000", nil))
@@ -50,12 +50,12 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := downloadImageToVolume("https://picsum.photos/1200", "./shared/test"); err != nil {
+	if err := downloadImageToVolume("https://picsum.photos/1200", "./static/test"); err != nil {
 		http.Error(w, fmt.Sprintf("failed when download image, err: %v", err), http.StatusInternalServerError)
 		return
 	}
 
-	_, err := readImageFromVolume("./shared/test")
+	_, err := readImageFromVolume("./static/test")
 	if err != nil {
 		http.Error(w, fmt.Sprintf("failed when read image, err: %v", err), http.StatusInternalServerError)
 		return
@@ -71,13 +71,13 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	graphqlResp := &GraphqlResponse{Data: &Todos{}}
 
-	if err := json.Unmarshal([]byte(respBody), graphqlResp); err != nil {
+	if err := json.Unmarshal(respBody, graphqlResp); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	t, _ := template.ParseFiles("view.html")
-	if err := t.Execute(w, graphqlResp); err != nil {
+	if err := t.Execute(w, graphqlResp.Data); err != nil {
 		http.Error(w, fmt.Sprintf("failed when execute template, err: %v", err), http.StatusInternalServerError)
 		return
 	}
@@ -143,32 +143,34 @@ func submitHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), statusCode)
 		return
 	}
+
+  http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
-func reqBackend(query string) (respBody string, statusCode int, err error) {
+func reqBackend(query string) (respBody []byte, statusCode int, err error) {
 	req, err := http.NewRequest(http.MethodPost, "http://localhost:8080/query", bytes.NewBuffer([]byte(query)))
 	if err != nil {
-		return "", http.StatusInternalServerError, err
+		return nil, http.StatusInternalServerError, err
 	}
 
 	req.Header.Add("Content-Type", "application/json")
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return "", http.StatusInternalServerError, err
+		return nil, http.StatusInternalServerError, err
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return "", http.StatusInternalServerError, err
+		return nil, http.StatusInternalServerError, err
 	}
 
 	if !isStatusCode2xx(resp.StatusCode) {
-		return "", resp.StatusCode, fmt.Errorf("failed with statusCode: %d, body: %s", resp.StatusCode, string(body))
+		return nil, resp.StatusCode, fmt.Errorf("failed with statusCode: %d, body: %s", resp.StatusCode, string(body))
 	}
 
-	return string(body), resp.StatusCode, nil
+	return body, resp.StatusCode, nil
 }
 
 func isStatusCode2xx(statusCode int) bool {
