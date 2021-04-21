@@ -1,6 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
+  namespace: exercise
   name: pingpong-app
 spec:
   type: ClusterIP
