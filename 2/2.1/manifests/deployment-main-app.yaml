@@ -16,3 +16,6 @@ spec:
       containers:
         - name: main-app
           image: dhanusaputra/main-app
+          envFrom:
+            - configMapRef:
+                name: app-config
