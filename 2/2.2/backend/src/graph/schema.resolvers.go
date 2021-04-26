@@ -12,13 +12,22 @@ import (
 )
 
 func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
+	v := &vCreateTodoRequest{
+		Text: input.Text,
+	}
+	if err := r.v.Struct(v); err != nil {
+		return nil, err
+	}
+
 	newLastID := r.lastID + 1
 	todo := &model.Todo{
 		Text: input.Text,
 		ID:   strconv.Itoa(newLastID),
 	}
+
 	r.todos = append(r.todos, todo)
 	r.lastID = newLastID
+
 	return todo, nil
 }
 

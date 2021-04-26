@@ -144,7 +144,7 @@ func submitHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-  http.Redirect(w, r, "/", http.StatusSeeOther)
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
 func reqBackend(query string) (respBody []byte, statusCode int, err error) {

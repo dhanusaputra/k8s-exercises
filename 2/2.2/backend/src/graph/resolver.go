@@ -6,10 +6,19 @@ package graph
 
 import (
 	"github.com/dhanusaputra/k8s-exercises/graph/model"
+	"github.com/go-playground/validator"
 )
 
 // Resolver ...
 type Resolver struct {
 	todos  []*model.Todo
 	lastID int
+	v      *validator.Validate
+}
+
+// NewResolver ...
+func NewResolver() *Resolver {
+	return &Resolver{
+		v: validator.New(),
+	}
 }

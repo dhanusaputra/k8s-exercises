@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 )
@@ -38,12 +39,17 @@ func randomHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "method is not supported", http.StatusMethodNotAllowed)
 		return
 	}
+
+	m := os.Getenv("MESSAGE")
+	fmt.Fprintln(w, m)
+
 	fmt.Fprintf(w, "%s: %s\n", time.Now().Format(time.RFC3339), random)
 	pong, err := getPong("http://pingpong-app:8080/pingpong")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+
 	fmt.Fprintf(w, "Ping / Pongs: %s", pong)
 }
 
