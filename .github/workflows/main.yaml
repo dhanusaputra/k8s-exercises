@@ -27,8 +27,6 @@ jobs:
         project_id: ${{ secrets.GKE_PROJECT }}
         export_default_credentials: true
 
-    - run: gcloud info
-
     - run: gcloud --quiet auth configure-docker
 
     - run: gcloud container clusters get-credentials "$GKE_CLUSTER" --zone "$GKE_ZONE"
