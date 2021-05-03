@@ -1,6 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  namespace: exercise
   name: dwk-environments
 spec:
   replicas: 1
