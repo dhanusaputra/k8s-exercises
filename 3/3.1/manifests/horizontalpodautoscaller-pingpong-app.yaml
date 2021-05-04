@@ -1,0 +1,12 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: pingpong-app-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: pingpong-app
+  minReplicas: 1
+  maxReplicas: 6
+  targetCPUUtilizationPercentage: 50
