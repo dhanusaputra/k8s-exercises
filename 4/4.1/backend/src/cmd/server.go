@@ -10,7 +10,7 @@ import (
 	"github.com/dhanusaputra/k8s-exercises/pkg/db"
 	"github.com/dhanusaputra/k8s-exercises/pkg/graph"
 	"github.com/dhanusaputra/k8s-exercises/pkg/graph/generated"
-  _ "github.com/lib/pq"
+	_ "github.com/lib/pq"
 )
 
 const defaultPort = "8080"

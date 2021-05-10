@@ -2,10 +2,10 @@ package db
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"log"
 	"os"
-  "errors"
 )
 
 var db *sql.DB
@@ -18,7 +18,7 @@ func Init() *sql.DB {
 		os.Getenv("DB_USER"),
 		os.Getenv("DB_PASSWORD"))
 
-  var err error
+	var err error
 	db, err = sql.Open("postgres", psqlInfo)
 	if err != nil {
 		log.Fatal(err)
@@ -45,8 +45,8 @@ func Init() *sql.DB {
 
 // Ping ...
 func Ping() error {
-  if db == nil {
-    return errors.New("db is nil")
-  }
+	if db == nil {
+		return errors.New("db is nil")
+	}
 	return db.Ping()
 }
