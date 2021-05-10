@@ -7,9 +7,10 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/dhanusaputra/k8s-exercises/db"
-	"github.com/dhanusaputra/k8s-exercises/graph"
-	"github.com/dhanusaputra/k8s-exercises/graph/generated"
+	"github.com/dhanusaputra/k8s-exercises/pkg/db"
+	"github.com/dhanusaputra/k8s-exercises/pkg/graph"
+	"github.com/dhanusaputra/k8s-exercises/pkg/graph/generated"
+  _ "github.com/lib/pq"
 )
 
 const defaultPort = "8080"

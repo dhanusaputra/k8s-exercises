@@ -23,7 +23,7 @@ func Init() *sql.DB {
 	}
 	defer d.Close()
 
-	stmt, err := db.Prepare(`CREATE TABLE IF NOT EXISTS todo (
+	stmt, err := d.Prepare(`CREATE TABLE IF NOT EXISTS todo (
     id SERIAL PRIMARY KEY, 
     text VARCHAR(255) NOT NULL
   );`)

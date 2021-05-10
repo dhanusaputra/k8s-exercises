@@ -7,8 +7,8 @@ import (
 	"context"
 	"strconv"
 
-	"github.com/dhanusaputra/k8s-exercises/graph/generated"
-	"github.com/dhanusaputra/k8s-exercises/graph/model"
+	"github.com/dhanusaputra/k8s-exercises/pkg/graph/generated"
+	"github.com/dhanusaputra/k8s-exercises/pkg/graph/model"
 )
 
 func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
