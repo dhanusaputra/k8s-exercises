@@ -25,12 +25,11 @@ func main() {
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	http.Handle("/query", srv)
 
-  http.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
-    if db.Ping() {
-      http.NotFound(w, r)
-    }
-    http.OK(w, r)
-  })
+	http.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
+		if err := db.Ping(); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
+	})
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))

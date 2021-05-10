@@ -5,7 +5,10 @@ import (
 	"fmt"
 	"log"
 	"os"
+  "errors"
 )
+
+var db *sql.DB
 
 // Init ...
 func Init() *sql.DB {
@@ -14,11 +17,11 @@ func Init() *sql.DB {
 		os.Getenv("DB_PORT"),
 		os.Getenv("DB_USER"),
 		os.Getenv("DB_PASSWORD"))
-	db, err := sql.Open("postgres", psqlInfo)
+	d, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer db.Close()
+	defer d.Close()
 
 	stmt, err := db.Prepare(`CREATE TABLE IF NOT EXISTS todo (
     id SERIAL PRIMARY KEY, 
@@ -34,11 +37,15 @@ func Init() *sql.DB {
 	}
 
 	log.Println("successfully init db")
+  db = d
 
 	return db
 }
 
 // Ping ...
-func Ping() bool {
-  return true
+func Ping() error {
+  if db == nil {
+    return errors.New("db is nil")
+  }
+	return db.Ping()
 }
