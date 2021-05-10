@@ -17,13 +17,15 @@ func Init() *sql.DB {
 		os.Getenv("DB_PORT"),
 		os.Getenv("DB_USER"),
 		os.Getenv("DB_PASSWORD"))
-	d, err := sql.Open("postgres", psqlInfo)
+
+  var err error
+	db, err = sql.Open("postgres", psqlInfo)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer d.Close()
+	defer db.Close()
 
-	stmt, err := d.Prepare(`CREATE TABLE IF NOT EXISTS todo (
+	stmt, err := db.Prepare(`CREATE TABLE IF NOT EXISTS todo (
     id SERIAL PRIMARY KEY, 
     text VARCHAR(255) NOT NULL
   );`)
@@ -37,7 +39,6 @@ func Init() *sql.DB {
 	}
 
 	log.Println("successfully init db")
-  db = d
 
 	return db
 }

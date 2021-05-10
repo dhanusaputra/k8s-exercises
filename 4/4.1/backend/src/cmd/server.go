@@ -28,7 +28,7 @@ func main() {
 
 	http.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
 		if err := db.Ping(); err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	})
 
