@@ -1,9 +1,9 @@
 FROM golang:alpine AS build
-WORKDIR .
+WORKDIR /build
+COPY go.mod go.sum ./
+RUN go mod download
 COPY . .
-RUN ls
-RUN go get -d -v && \
-    go build -o /out/main /cmd
+RUN go build -o /out/main ./cmd
 
 FROM alpine
 COPY --from=build /out/main .
