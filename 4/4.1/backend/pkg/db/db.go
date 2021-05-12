@@ -13,10 +13,10 @@ var db *sql.DB
 // Init ...
 func Init() *sql.DB {
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s sslmode=disable",
-		os.Getenv("DB_HOST"),
-		os.Getenv("DB_PORT"),
-		os.Getenv("DB_USER"),
-		os.Getenv("DB_PASSWORD"))
+		"postgres-svc",
+    "5432",
+		os.Getenv("POSTGRES_USER"),
+		os.Getenv("POSTGRES_PASSWORD"))
 
 	var err error
 	db, err = sql.Open("postgres", psqlInfo)
