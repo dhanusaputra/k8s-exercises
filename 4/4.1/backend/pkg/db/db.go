@@ -14,7 +14,7 @@ var db *sql.DB
 func Init() *sql.DB {
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s sslmode=disable",
 		"postgres-svc",
-    "5432",
+		"5432",
 		os.Getenv("POSTGRES_USER"),
 		os.Getenv("POSTGRES_PASSWORD"))
 
@@ -23,7 +23,10 @@ func Init() *sql.DB {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer db.Close()
+
+	if err := db.Ping(); err != nil {
+		log.Fatal(err)
+	}
 
 	stmt, err := db.Prepare(`CREATE TABLE IF NOT EXISTS todo (
     id SERIAL PRIMARY KEY, 
@@ -32,6 +35,7 @@ func Init() *sql.DB {
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer stmt.Close()
 
 	_, err = stmt.Exec()
 	if err != nil {
