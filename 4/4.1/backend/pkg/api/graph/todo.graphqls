@@ -5,6 +5,7 @@
 type Todo {
   id: ID!
   text: String!
+  done: Boolean!
 }
 
 type Query {
@@ -13,8 +14,10 @@ type Query {
 
 input NewTodo {
   text: String!
+  done: Boolean!
 }
 
 type Mutation {
   createTodo(input: NewTodo!): Todo!
+  updateTodo(id: ID!, input: NewTodo!): Todo!
 }

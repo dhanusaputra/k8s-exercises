@@ -5,6 +5,7 @@ package graph
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 
 	"github.com/dhanusaputra/k8s-exercises/pkg/graph/generated"
@@ -27,6 +28,44 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) 
 	todo := &model.Todo{
 		ID:   strconv.Itoa(id),
 		Text: input.Text,
+	}
+
+	return todo, nil
+}
+
+func (r *mutationResolver) UpdateTodo(ctx context.Context, id string, input model.NewTodo) (*model.Todo, error) {
+	v := &vUpdateTodo{
+		ID:   id,
+		Text: input.Text,
+	}
+	if err := r.v.Struct(v); err != nil {
+		return nil, err
+	}
+
+	stmt, err := r.db.Prepare("UPDATE todo SET text=$1, done=$2 WHERE id=$3")
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+
+	res, err := stmt.Exec(input.Text, input.Done, id)
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := res.RowsAffected()
+	if err != nil {
+		return nil, err
+	}
+
+	if rows == 0 {
+		return nil, fmt.Errorf("ID is not found, ID: %s", id)
+	}
+
+	todo := &model.Todo{
+		ID:   id,
+		Text: input.Text,
+		Done: input.Done,
 	}
 
 	return todo, nil
