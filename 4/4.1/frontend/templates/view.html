@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <img src='static/test' alt='test' style='width:300px;height:300px;'></br></br>
+    <form action='submit' method='post'>
+      <input type='text' id='todo' name='todo'> 
+      <input type='submit' value='Create TODO'>
+    </form>
+    <ul>
+      {{range $i, $v := .Todos}}
+        <li>{{$v.Text}}</li>
+      {{end}}
+    </ul>
+  </body>
+</html>

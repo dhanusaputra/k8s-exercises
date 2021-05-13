@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: PROJECT/IMAGE
+          image: PROJECT/IMAGE_BACKEND
           envFrom:
           - secretRef:
               name: postgres-secret
@@ -31,3 +31,5 @@ spec:
             httpGet:
               path: /healthz
               port: 8080
+        - name: frontend
+          image: PROJECT/IMAGE_FRONTEND

@@ -7,6 +7,8 @@ resources:
 - manifests/deployment.yaml
 - manifests/service.yaml
 images:
-- name: PROJECT/IMAGE
+- name: PROJECT/IMAGE_BACKEND
   newName: dhanusaputra/backend
+- name: PROJECT/IMAGE_FRONTEND
+  newName: dhanusaputra/frontend
 namespace: exercise
