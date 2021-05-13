@@ -12,7 +12,7 @@ import (
 	"github.com/dhanusaputra/k8s-exercises/pkg/graph/model"
 )
 
-func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
+func (r *mutationResolver) CreateTodo(ctx context.Context, input model.TodoInput) (*model.Todo, error) {
 	v := &vCreateTodo{
 		Text: input.Text,
 	}
@@ -28,12 +28,13 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) 
 	todo := &model.Todo{
 		ID:   strconv.Itoa(id),
 		Text: input.Text,
+    Done:  input.Done,
 	}
 
 	return todo, nil
 }
 
-func (r *mutationResolver) UpdateTodo(ctx context.Context, id string, input model.NewTodo) (*model.Todo, error) {
+func (r *mutationResolver) UpdateTodo(ctx context.Context, id string, input model.TodoInput) (*model.Todo, error) {
 	v := &vUpdateTodo{
 		ID:   id,
 		Text: input.Text,
@@ -59,7 +60,7 @@ func (r *mutationResolver) UpdateTodo(ctx context.Context, id string, input mode
 	}
 
 	if rows == 0 {
-		return nil, fmt.Errorf("ID is not found, ID: %s", id)
+		return nil, fmt.Errorf("cannot find ID, ID: %s", id)
 	}
 
 	todo := &model.Todo{

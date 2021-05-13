@@ -44,8 +44,8 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Mutation struct {
-		CreateTodo func(childComplexity int, input model.NewTodo) int
-		UpdateTodo func(childComplexity int, id string, input model.NewTodo) int
+		CreateTodo func(childComplexity int, input model.TodoInput) int
+		UpdateTodo func(childComplexity int, id string, input model.TodoInput) int
 	}
 
 	Query struct {
@@ -60,8 +60,8 @@ type ComplexityRoot struct {
 }
 
 type MutationResolver interface {
-	CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error)
-	UpdateTodo(ctx context.Context, id string, input model.NewTodo) (*model.Todo, error)
+	CreateTodo(ctx context.Context, input model.TodoInput) (*model.Todo, error)
+	UpdateTodo(ctx context.Context, id string, input model.TodoInput) (*model.Todo, error)
 }
 type QueryResolver interface {
 	Todos(ctx context.Context) ([]*model.Todo, error)
@@ -92,7 +92,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateTodo(childComplexity, args["input"].(model.NewTodo)), true
+		return e.complexity.Mutation.CreateTodo(childComplexity, args["input"].(model.TodoInput)), true
 
 	case "Mutation.updateTodo":
 		if e.complexity.Mutation.UpdateTodo == nil {
@@ -104,7 +104,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateTodo(childComplexity, args["id"].(string), args["input"].(model.NewTodo)), true
+		return e.complexity.Mutation.UpdateTodo(childComplexity, args["id"].(string), args["input"].(model.TodoInput)), true
 
 	case "Query.todos":
 		if e.complexity.Query.Todos == nil {
@@ -212,14 +212,14 @@ type Query {
   todos: [Todo!]!
 }
 
-input NewTodo {
+input TodoInput {
   text: String!
   done: Boolean!
 }
 
 type Mutation {
-  createTodo(input: NewTodo!): Todo!
-  updateTodo(id: ID!, input: NewTodo!): Todo!
+  createTodo(input: TodoInput!): Todo
+  updateTodo(id: ID!, input: TodoInput!): Todo
 }
 `, BuiltIn: false},
 }
@@ -232,10 +232,10 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 func (ec *executionContext) field_Mutation_createTodo_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 model.NewTodo
+	var arg0 model.TodoInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNNewTodo2githubᚗcomᚋdhanusaputraᚋk8sᚑexercisesᚋpkgᚋgraphᚋmodelᚐNewTodo(ctx, tmp)
+		arg0, err = ec.unmarshalNTodoInput2githubᚗcomᚋdhanusaputraᚋk8sᚑexercisesᚋpkgᚋgraphᚋmodelᚐTodoInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -256,10 +256,10 @@ func (ec *executionContext) field_Mutation_updateTodo_args(ctx context.Context, 
 		}
 	}
 	args["id"] = arg0
-	var arg1 model.NewTodo
+	var arg1 model.TodoInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalNNewTodo2githubᚗcomᚋdhanusaputraᚋk8sᚑexercisesᚋpkgᚋgraphᚋmodelᚐNewTodo(ctx, tmp)
+		arg1, err = ec.unmarshalNTodoInput2githubᚗcomᚋdhanusaputraᚋk8sᚑexercisesᚋpkgᚋgraphᚋmodelᚐTodoInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -346,21 +346,18 @@ func (ec *executionContext) _Mutation_createTodo(ctx context.Context, field grap
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateTodo(rctx, args["input"].(model.NewTodo))
+		return ec.resolvers.Mutation().CreateTodo(rctx, args["input"].(model.TodoInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
 	res := resTmp.(*model.Todo)
 	fc.Result = res
-	return ec.marshalNTodo2ᚖgithubᚗcomᚋdhanusaputraᚋk8sᚑexercisesᚋpkgᚋgraphᚋmodelᚐTodo(ctx, field.Selections, res)
+	return ec.marshalOTodo2ᚖgithubᚗcomᚋdhanusaputraᚋk8sᚑexercisesᚋpkgᚋgraphᚋmodelᚐTodo(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_updateTodo(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -388,21 +385,18 @@ func (ec *executionContext) _Mutation_updateTodo(ctx context.Context, field grap
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateTodo(rctx, args["id"].(string), args["input"].(model.NewTodo))
+		return ec.resolvers.Mutation().UpdateTodo(rctx, args["id"].(string), args["input"].(model.TodoInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
 	res := resTmp.(*model.Todo)
 	fc.Result = res
-	return ec.marshalNTodo2ᚖgithubᚗcomᚋdhanusaputraᚋk8sᚑexercisesᚋpkgᚋgraphᚋmodelᚐTodo(ctx, field.Selections, res)
+	return ec.marshalOTodo2ᚖgithubᚗcomᚋdhanusaputraᚋk8sᚑexercisesᚋpkgᚋgraphᚋmodelᚐTodo(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_todos(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1703,8 +1697,8 @@ func (ec *executionContext) ___Type_ofType(ctx context.Context, field graphql.Co
 
 // region    **************************** input.gotpl *****************************
 
-func (ec *executionContext) unmarshalInputNewTodo(ctx context.Context, obj interface{}) (model.NewTodo, error) {
-	var it model.NewTodo
+func (ec *executionContext) unmarshalInputTodoInput(ctx context.Context, obj interface{}) (model.TodoInput, error) {
+	var it model.TodoInput
 	var asMap = obj.(map[string]interface{})
 
 	for k, v := range asMap {
@@ -1756,14 +1750,8 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			out.Values[i] = graphql.MarshalString("Mutation")
 		case "createTodo":
 			out.Values[i] = ec._Mutation_createTodo(ctx, field)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "updateTodo":
 			out.Values[i] = ec._Mutation_updateTodo(ctx, field)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -2131,11 +2119,6 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
-func (ec *executionContext) unmarshalNNewTodo2githubᚗcomᚋdhanusaputraᚋk8sᚑexercisesᚋpkgᚋgraphᚋmodelᚐNewTodo(ctx context.Context, v interface{}) (model.NewTodo, error) {
-	res, err := ec.unmarshalInputNewTodo(ctx, v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
 	res, err := graphql.UnmarshalString(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -2149,10 +2132,6 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 		}
 	}
 	return res
-}
-
-func (ec *executionContext) marshalNTodo2githubᚗcomᚋdhanusaputraᚋk8sᚑexercisesᚋpkgᚋgraphᚋmodelᚐTodo(ctx context.Context, sel ast.SelectionSet, v model.Todo) graphql.Marshaler {
-	return ec._Todo(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalNTodo2ᚕᚖgithubᚗcomᚋdhanusaputraᚋk8sᚑexercisesᚋpkgᚋgraphᚋmodelᚐTodoᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Todo) graphql.Marshaler {
@@ -2200,6 +2179,11 @@ func (ec *executionContext) marshalNTodo2ᚖgithubᚗcomᚋdhanusaputraᚋk8sᚑ
 		return graphql.Null
 	}
 	return ec._Todo(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNTodoInput2githubᚗcomᚋdhanusaputraᚋk8sᚑexercisesᚋpkgᚋgraphᚋmodelᚐTodoInput(ctx context.Context, v interface{}) (model.TodoInput, error) {
+	res, err := ec.unmarshalInputTodoInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalN__Directive2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐDirective(ctx context.Context, sel ast.SelectionSet, v introspection.Directive) graphql.Marshaler {
@@ -2477,6 +2461,13 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 		return graphql.Null
 	}
 	return graphql.MarshalString(*v)
+}
+
+func (ec *executionContext) marshalOTodo2ᚖgithubᚗcomᚋdhanusaputraᚋk8sᚑexercisesᚋpkgᚋgraphᚋmodelᚐTodo(ctx context.Context, sel ast.SelectionSet, v *model.Todo) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Todo(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalO__EnumValue2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐEnumValueᚄ(ctx context.Context, sel ast.SelectionSet, v []introspection.EnumValue) graphql.Marshaler {

@@ -2,13 +2,13 @@
 
 package model
 
-type NewTodo struct {
+type Todo struct {
+	ID   string `json:"id"`
 	Text string `json:"text"`
 	Done bool   `json:"done"`
 }
 
-type Todo struct {
-	ID   string `json:"id"`
+type TodoInput struct {
 	Text string `json:"text"`
 	Done bool   `json:"done"`
 }
