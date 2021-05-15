@@ -76,7 +76,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	t, _ := template.ParseFiles("./templates/view.html")
+	t := template.Must(template.New("view.html").ParseFiles("view.html"))
 	if err := t.Execute(w, graphqlResp.Data); err != nil {
 		http.Error(w, fmt.Sprintf("failed when execute template, err: %v", err), http.StatusInternalServerError)
 		return

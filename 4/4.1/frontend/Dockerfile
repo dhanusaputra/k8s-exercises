@@ -5,5 +5,5 @@ RUN go mod download && \
     go build -o /out/main ./cmd
 
 FROM alpine
-COPY --from=build /out/main .
+COPY --from=build /out/main /build/templates ./
 CMD ["./main"]
