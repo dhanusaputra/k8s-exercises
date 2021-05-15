@@ -30,7 +30,8 @@ func Init() *sql.DB {
 
 	stmt, err := db.Prepare(`CREATE TABLE IF NOT EXISTS todo (
     id SERIAL PRIMARY KEY, 
-    text VARCHAR(255) NOT NULL
+    text VARCHAR(255) NOT NULL,
+    done BOOLEAN NOT NULL
   );`)
 	if err != nil {
 		log.Fatal(err)

@@ -21,7 +21,7 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input model.TodoInput
 	}
 
 	var id int
-	if err := r.db.QueryRow("INSERT INTO todo(text) VALUES($1) returning id;", input.Text).Scan(&id); err != nil {
+	if err := r.db.QueryRow("INSERT INTO todo(text, done) VALUES($1, $2) returning id;", input.Text, input.Done).Scan(&id); err != nil {
 		return nil, err
 	}
 
@@ -73,7 +73,7 @@ func (r *mutationResolver) UpdateTodo(ctx context.Context, id string, input mode
 }
 
 func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	rows, err := r.db.Query("SELECT id, text FROM todo")
+	rows, err := r.db.Query("SELECT id, text, done FROM todo")
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +82,7 @@ func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
 	todos := []*model.Todo{}
 	for rows.Next() {
 		t := &model.Todo{}
-		if err := rows.Scan(&t.ID, &t.Text); err != nil {
+		if err := rows.Scan(&t.ID, &t.Text, &t.Done); err != nil {
 			return nil, err
 		}
 		todos = append(todos, t)
