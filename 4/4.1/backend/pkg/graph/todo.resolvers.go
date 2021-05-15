@@ -28,7 +28,7 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input model.TodoInput
 	todo := &model.Todo{
 		ID:   strconv.Itoa(id),
 		Text: input.Text,
-    Done:  input.Done,
+		Done: input.Done,
 	}
 
 	return todo, nil

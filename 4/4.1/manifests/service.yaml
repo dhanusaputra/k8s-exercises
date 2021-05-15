@@ -6,7 +6,8 @@ metadata:
 spec:
   type: ClusterIP
   selector:
-    app: backend
+    app: project
+    tier: backend
   ports:
     - port: 8080
       protocol: TCP
@@ -19,9 +20,10 @@ metadata:
   namespace: exercise
   name: frontend-svc
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   selector:
-    app: backend
+    app: project
+    tier: frontend
   ports:
     - port: 3000
       protocol: TCP

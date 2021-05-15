@@ -7,11 +7,13 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: backend
+      app: project
+      tier: backend
   template:
     metadata:
       labels:
-        app: backend
+        app: project
+        tier: backend
     spec:
       containers:
         - name: backend
@@ -31,5 +33,25 @@ spec:
             httpGet:
               path: /healthz
               port: 8080
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: exercise
+  name: frontend-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: project
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: project
+        tier: frontend
+    spec:
+      containers:
         - name: frontend
           image: PROJECT/IMAGE_FRONTEND

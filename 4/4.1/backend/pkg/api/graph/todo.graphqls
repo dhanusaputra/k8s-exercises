@@ -5,7 +5,7 @@
 type Todo {
   id: ID!
   text: String!
-  done: Boolean!
+  done: Boolean
 }
 
 type Query {
@@ -14,7 +14,7 @@ type Query {
 
 input TodoInput {
   text: String!
-  done: Boolean!
+  done: Boolean
 }
 
 type Mutation {

@@ -205,7 +205,7 @@ var sources = []*ast.Source{
 type Todo {
   id: ID!
   text: String!
-  done: Boolean!
+  done: Boolean
 }
 
 type Query {
@@ -214,7 +214,7 @@ type Query {
 
 input TodoInput {
   text: String!
-  done: Boolean!
+  done: Boolean
 }
 
 type Mutation {
@@ -600,14 +600,11 @@ func (ec *executionContext) _Todo_done(ctx context.Context, field graphql.Collec
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(bool)
+	res := resTmp.(*bool)
 	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) ___Directive_name(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) (ret graphql.Marshaler) {
@@ -1715,7 +1712,7 @@ func (ec *executionContext) unmarshalInputTodoInput(ctx context.Context, obj int
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("done"))
-			it.Done, err = ec.unmarshalNBoolean2bool(ctx, v)
+			it.Done, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -1830,9 +1827,6 @@ func (ec *executionContext) _Todo(ctx context.Context, sel ast.SelectionSet, obj
 			}
 		case "done":
 			out.Values[i] = ec._Todo_done(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}

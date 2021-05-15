@@ -24,6 +24,7 @@ func main() {
 
 	dbObj := db.Init()
 	defer dbObj.Close()
+
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: graph.NewResolver(dbObj)}))
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))

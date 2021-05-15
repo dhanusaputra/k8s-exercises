@@ -148,7 +148,7 @@ func submitHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func reqBackend(query string) (respBody []byte, statusCode int, err error) {
-	req, err := http.NewRequest(http.MethodPost, "http://localhost:8080/query", bytes.NewBuffer([]byte(query)))
+	req, err := http.NewRequest(http.MethodPost, "http://backend-svc:8080/query", bytes.NewBuffer([]byte(query)))
 	if err != nil {
 		return nil, http.StatusInternalServerError, err
 	}
