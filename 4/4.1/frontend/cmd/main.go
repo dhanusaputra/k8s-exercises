@@ -20,7 +20,8 @@ var (
 
 // GraphqlResponse ...
 type GraphqlResponse struct {
-	Data interface{} `json:"data"`
+	Data   interface{}    `json:"data"`
+	Errors []GraphqlError `json:"errors,omitempty"`
 }
 
 // Todos ...
@@ -32,6 +33,12 @@ type Todos struct {
 type Todo struct {
 	ID   string `json:"id"`
 	Text string `json:"text"`
+}
+
+// GraphqlError ...
+type GraphqlError struct {
+	Message string        `json:"message"`
+	Path    []interface{} `json:"path,omitempty"`
 }
 
 func main() {
@@ -63,21 +70,14 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	query := fmt.Sprintf("{\"query\":\"query listTodo {\\n    todos {\\n      id\\n      text\\n    }\\n}\",\"variables\":{}}")
 
-	respBody, statusCode, err := reqBackend(query)
+	resp, statusCode, err := reqBackend(query)
 	if err != nil {
 		http.Error(w, err.Error(), statusCode)
 		return
 	}
 
-	graphqlResp := &GraphqlResponse{Data: &Todos{}}
-
-	if err := json.Unmarshal(respBody, graphqlResp); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
 	t := template.Must(template.New("view.html").ParseFiles("view.html"))
-	if err := t.Execute(w, graphqlResp.Data); err != nil {
+	if err := t.Execute(w, resp.Data); err != nil {
 		http.Error(w, fmt.Sprintf("failed when execute template, err: %v", err), http.StatusInternalServerError)
 		return
 	}
@@ -136,7 +136,7 @@ func submitHandler(w http.ResponseWriter, r *http.Request) {
 
 	todo := r.FormValue("todo")
 
-	query := fmt.Sprintf("{\"query\":\"mutation createTodo ($todo:String!) {\\n  createTodo(input:{text:$todo}) {\\n    text\\n  }\\n}\",\"variables\":{\"todo\":\"%s\"}}", todo)
+  query := fmt.Sprintf("{\"query\":\"mutation createTodo ($todo:String!,$done:Boolean!) {\\n  createTodo(input:{text:$todo,done:$done}) {\\n    text\\n    done\\n  }\\n}\",\"variables\":{\"todo\":\"%s\",\"done\":false}}", todo)
 
 	_, statusCode, err := reqBackend(query)
 	if err != nil {
@@ -147,7 +147,7 @@ func submitHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
-func reqBackend(query string) (respBody []byte, statusCode int, err error) {
+func reqBackend(query string) (*GraphqlResponse, int, error) {
 	req, err := http.NewRequest(http.MethodPost, "http://backend-svc:8080/query", bytes.NewBuffer([]byte(query)))
 	if err != nil {
 		return nil, http.StatusInternalServerError, err
@@ -170,7 +170,17 @@ func reqBackend(query string) (respBody []byte, statusCode int, err error) {
 		return nil, resp.StatusCode, fmt.Errorf("failed with statusCode: %d, body: %s", resp.StatusCode, string(body))
 	}
 
-	return body, resp.StatusCode, nil
+	graphqlResp := &GraphqlResponse{Data: &Todos{}}
+
+	if err := json.Unmarshal(body, graphqlResp); err != nil {
+		return nil, http.StatusInternalServerError, err
+	}
+
+  if len(graphqlResp.Errors) > 0 {
+    return nil, http.StatusInternalServerError, fmt.Errorf("failed with graphql, err: %s", graphqlResp.Errors[0].Message)
+  }
+
+	return graphqlResp, resp.StatusCode, nil
 }
 
 func isStatusCode2xx(statusCode int) bool {

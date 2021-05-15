@@ -38,6 +38,6 @@ func main() {
 		fmt.Fprint(w, "ok")
 	})
 
-	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
+	log.Printf("connect to :%s for GraphQL playground", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
