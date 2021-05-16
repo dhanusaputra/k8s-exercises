@@ -136,7 +136,7 @@ func submitHandler(w http.ResponseWriter, r *http.Request) {
 
 	todo := r.FormValue("todo")
 
-  query := fmt.Sprintf("{\"query\":\"mutation createTodo ($todo:String!,$done:Boolean!) {\\n  createTodo(input:{text:$todo,done:$done}) {\\n    text\\n    done\\n  }\\n}\",\"variables\":{\"todo\":\"%s\",\"done\":false}}", todo)
+	query := fmt.Sprintf("{\"query\":\"mutation createTodo ($todo:String!,$done:Boolean!) {\\n  createTodo(input:{text:$todo,done:$done}) {\\n    text\\n    done\\n  }\\n}\",\"variables\":{\"todo\":\"%s\",\"done\":false}}", todo)
 
 	_, statusCode, err := reqBackend(query)
 	if err != nil {
@@ -176,9 +176,9 @@ func reqBackend(query string) (*GraphqlResponse, int, error) {
 		return nil, http.StatusInternalServerError, err
 	}
 
-  if len(graphqlResp.Errors) > 0 {
-    return nil, http.StatusInternalServerError, fmt.Errorf("failed with graphql, err: %s", graphqlResp.Errors[0].Message)
-  }
+	if len(graphqlResp.Errors) > 0 {
+		return nil, http.StatusInternalServerError, fmt.Errorf("failed with graphql, err: %s", graphqlResp.Errors[0].Message)
+	}
 
 	return graphqlResp, resp.StatusCode, nil
 }

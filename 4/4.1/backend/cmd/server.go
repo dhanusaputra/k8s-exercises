@@ -11,6 +11,8 @@ import (
 	"github.com/dhanusaputra/k8s-exercises/pkg/db"
 	"github.com/dhanusaputra/k8s-exercises/pkg/graph"
 	"github.com/dhanusaputra/k8s-exercises/pkg/graph/generated"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	_ "github.com/lib/pq"
 )
 
@@ -27,10 +29,17 @@ func main() {
 
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: graph.NewResolver(dbObj)}))
 
-	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	http.Handle("/query", srv)
+	r := chi.NewRouter()
 
-	http.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
+	r.Use(middleware.RequestID)
+	r.Use(middleware.RealIP)
+	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
+
+	r.Handle("/", playground.Handler("GraphQL playground", "/query"))
+	r.Handle("/query", srv)
+
+	r.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
 		if err := db.Ping(); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -39,5 +48,5 @@ func main() {
 	})
 
 	log.Printf("connect to :%s for GraphQL playground", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	log.Fatal(http.ListenAndServe(":"+port, r))
 }
