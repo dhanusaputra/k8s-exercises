@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: daily-todo
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: daily-todo
+            image: dhanusaputra/cronjob
+            env:
+              - name: URL
+                value: "http://backend-svc:8080/query"
+          restartPolicy: OnFailure
