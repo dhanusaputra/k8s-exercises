@@ -1,4 +1,4 @@
 FROM alpine
-COPY daily_todo.sh .
+COPY daily-todo.sh .
 RUN apk add --no-cache bash curl
-CMD ["./daily_todo.sh"]
+CMD ["./daily-todo.sh"]
