@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 )
 
 var (
@@ -11,10 +12,15 @@ var (
 )
 
 func main() {
+	port := os.Getenv("PINGPONG_PORT")
+	if port == "" {
+		port = "8080"
+	}
+
 	http.HandleFunc("/pingpong", pingpongHandler)
 
-	log.Println("Starting server at port 8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Println("Starting server at port ", port)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%v", port), nil))
 }
 
 func pingpongHandler(w http.ResponseWriter, r *http.Request) {

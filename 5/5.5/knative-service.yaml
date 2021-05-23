@@ -1,14 +1,30 @@
 apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
-  name: helloworld-go
+  name: pingpong-app
 spec:
   template:
     metadata:
-      name: helloworld-go-dwk-message-v1
+      name: pingpong-app
     spec:
       containers:
-        - image: gcr.io/knative-samples/helloworld-go
+        - image: dhanusaputra/pingpong_app
           env:
-            - name: TARGET
-              value: "DwK"
+            - name: PINGPONG_PORT
+              value: "8080"
+
+---
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: main-app
+spec:
+  template:
+    metadata:
+      name: main-app
+    spec:
+      containers:
+        - image: dhanusaputra/main-app
+          env:
+            - name: APP_PORT
+              value: "5000"

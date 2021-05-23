@@ -17,13 +17,18 @@ var (
 )
 
 func main() {
+	port := os.Getenv("APP_PORT")
+	if len(port) == 0 {
+		port = "5000"
+	}
+
 	random = fmt.Sprintf("%x", md5.Sum([]byte(time.Now().String())))
 
 	http.HandleFunc("/ping", pingHandler)
 	http.HandleFunc("/random", randomHandler)
 
-	log.Println("Starting server at port 5000")
-	log.Fatal(http.ListenAndServe(":5000", nil))
+	log.Println("Starting server at port ", port)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%v", port), nil))
 }
 
 func pingHandler(w http.ResponseWriter, r *http.Request) {
