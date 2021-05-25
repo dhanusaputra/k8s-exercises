@@ -8,7 +8,13 @@
     </form>
     <ul>
       {{range $i, $v := .Todos}}
-        <li>{{$v.Text}}</li>
+        <li>
+          <form action='update' method='post'>
+            <input type="checkbox" id={{$v.Id}} checked={{v.Done}}> 
+            <label>{{$v.Text}}</label>
+            <input type='submit' value='Update TODO'>
+          </form>
+        </li>
       {{end}}
     </ul>
   </body>
