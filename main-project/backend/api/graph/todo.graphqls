@@ -4,7 +4,7 @@
 
 type Todo {
   id: ID!
-  text: String
+  text: String!
   done: Boolean
 }
 
@@ -13,11 +13,13 @@ type Query {
 }
 
 input TodoInput {
-  text: String
+  text: String!
   done: Boolean
 }
 
 type Mutation {
   createTodo(input: TodoInput!): Todo
-  updateTodo(id: ID!, input: TodoInput!): Todo
+  updateTodo(id: ID!, modifications: Map!): Todo
 }
+
+scalar Map

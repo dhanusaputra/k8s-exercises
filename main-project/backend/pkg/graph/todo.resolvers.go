@@ -11,6 +11,7 @@ import (
 
 	"github.com/dhanusaputra/k8s-exercises/pkg/graph/generated"
 	"github.com/dhanusaputra/k8s-exercises/pkg/graph/model"
+	"github.com/mitchellh/mapstructure"
 )
 
 func (r *mutationResolver) CreateTodo(ctx context.Context, input model.TodoInput) (*model.Todo, error) {
@@ -35,10 +36,40 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input model.TodoInput
 	return todo, nil
 }
 
-func (r *mutationResolver) UpdateTodo(ctx context.Context, id string, input model.TodoInput) (*model.Todo, error) {
+func (r *mutationResolver) UpdateTodo(ctx context.Context, id string, modifications map[string]interface{}) (*model.Todo, error) {
+	rows, err := r.db.Query("SELECT id, text, done FROM todo WHERE id=$1", id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	if !rows.Next() {
+		if rows.Err() != nil {
+			return nil, rows.Err()
+		}
+		return nil, fmt.Errorf("cannot find ID, ID: %s", id)
+	}
+
+	updatedTodo := &model.Todo{}
+	if err := rows.Scan(&updatedTodo.ID, &updatedTodo.Text, &updatedTodo.Done); err != nil {
+		return nil, err
+	}
+
+	if rows.Next() {
+		return nil, fmt.Errorf("find multiple rows, ID: %s", id)
+	}
+
+	if updatedTodo == nil {
+		return nil, fmt.Errorf("cannot find ID, ID: %s", id)
+	}
+
+	if err := mapstructure.Decode(modifications, updatedTodo); err != nil {
+		return nil, err
+	}
+
 	v := &vUpdateTodo{
-		ID:   id,
-		Text: input.Text,
+		ID:   updatedTodo.ID,
+		Text: updatedTodo.Text,
 	}
 	if err := r.v.Struct(v); err != nil {
 		return nil, err
@@ -50,24 +81,24 @@ func (r *mutationResolver) UpdateTodo(ctx context.Context, id string, input mode
 	}
 	defer stmt.Close()
 
-	res, err := stmt.Exec(input.Text, input.Done, id)
+	res, err := stmt.Exec(updatedTodo.Text, updatedTodo.Done, id)
 	if err != nil {
 		return nil, err
 	}
 
-	rows, err := res.RowsAffected()
+	rowsNum, err := res.RowsAffected()
 	if err != nil {
 		return nil, err
 	}
 
-	if rows == 0 {
+	if rowsNum == 0 {
 		return nil, fmt.Errorf("cannot find ID, ID: %s", id)
 	}
 
 	todo := &model.Todo{
-		ID:   id,
-		Text: input.Text,
-		Done: input.Done,
+		ID:   updatedTodo.ID,
+		Text: updatedTodo.Text,
+		Done: updatedTodo.Done,
 	}
 
 	return todo, nil

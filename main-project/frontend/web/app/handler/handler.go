@@ -57,18 +57,17 @@ func CreateTodo(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
-// UpdateTodo ...
-func UpdateTodo(w http.ResponseWriter, r *http.Request) {
+// ToggleTodo ...
+func ToggleTodo(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	v := r.FormValue(id)
-	test := "test"
 
-	done := "false"
+	done := "true"
 	if len(v) > 0 {
-		done = "true"
+		done = "false"
 	}
 
-	query := fmt.Sprintf("{\"query\":\"mutation updateTodo ($id:ID!,$text:String!,$done:Boolean!) {\\n  updateTodo(id:$id, input:{text:$text,done:$done}) {\\n    id\\n    text\\n    done\\n  }\\n}\",\"variables\":{\"id\":1,\"text\":\"%s\",\"done\":%s}}", test, done)
+	query := fmt.Sprintf("{\"query\":\"mutation updateTodo ($id:ID!,$done:Boolean!) {\\n  updateTodo(id:$id, modifications:{done:$done}) {\\n    id\\n    text\\n    done\\n  }\\n}\",\"variables\":{\"id\":%s,\"done\":%s}}", id, done)
 
 	_, statusCode, err := util.ReqBackend(query)
 	if err != nil {

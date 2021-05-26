@@ -9,10 +9,10 @@
     <ul>
       {{range $i, $v := .Todos}}
         <li>
-          <form action='update/{{$v.ID}}' method='post'>
-            <input type='checkbox' id='{{$v.ID}}' name='{{$v.ID}}' {{if $v.Done}}checked{{end}}> 
+          <form action='toggle/{{$v.ID}}' method='post'>
+            <input type='checkbox' id='{{$v.ID}}' name='{{$v.ID}}' onclick='return false;' {{if $v.Done}}checked{{end}}> 
+            <input type='submit' value='Toggle'>
             <label>{{$v.Text}}</label>
-            <input type='submit' value='Update TODO'>
           </form>
         </li>
       {{end}}

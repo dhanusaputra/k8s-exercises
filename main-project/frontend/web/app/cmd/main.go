@@ -14,7 +14,7 @@ func main() {
 
 	r.Get("/", handler.View)
 	r.Post("/create", handler.CreateTodo)
-	r.Post("/update/{id}", handler.UpdateTodo)
+	r.Post("/toggle/{id}", handler.ToggleTodo)
 
 	fileServer(r, "/static/", http.Dir("./static"))
 
