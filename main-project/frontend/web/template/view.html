@@ -3,14 +3,14 @@
   <body>
     <img src='static/test' alt='test' style='width:300px;height:300px;'></br></br>
     <form action='create' method='post'>
-      <input type='text' id='todo' name='todo'> 
+      <input type='text' id='text' name='text'> 
       <input type='submit' value='Create TODO'>
     </form>
     <ul>
       {{range $i, $v := .Todos}}
         <li>
           <form action='update/{{$v.ID}}' method='post'>
-            <input type='checkbox' id={{$v.ID}} {{if $v.Done}}checked{{end}}> 
+            <input type='checkbox' id='{{$v.ID}}' name='{{$v.ID}}' {{if $v.Done}}checked{{end}}> 
             <label>{{$v.Text}}</label>
             <input type='submit' value='Update TODO'>
           </form>

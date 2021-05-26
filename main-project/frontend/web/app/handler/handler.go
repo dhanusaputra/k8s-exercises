@@ -44,9 +44,9 @@ func CreateTodo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	todo := r.FormValue("todo")
+	text := r.FormValue("text")
 
-	query := fmt.Sprintf("{\"query\":\"mutation createTodo ($todo:String!,$done:Boolean!) {\\n  createTodo(input:{text:$todo,done:$done}) {\\n    text\\n    done\\n  }\\n}\",\"variables\":{\"todo\":\"%s\",\"done\":false}}", todo)
+	query := fmt.Sprintf("{\"query\":\"mutation createTodo ($text:String!,$done:Boolean!) {\\n  createTodo(input:{text:$text,done:$done}) {\\n    text\\n    done\\n  }\\n}\",\"variables\":{\"text\":\"%s\",\"done\":false}}", text)
 
 	_, statusCode, err := util.ReqBackend(query)
 	if err != nil {
@@ -60,10 +60,15 @@ func CreateTodo(w http.ResponseWriter, r *http.Request) {
 // UpdateTodo ...
 func UpdateTodo(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
+	v := r.FormValue(id)
+	test := "test"
 
-	done := r.FormValue(id)
+	done := "false"
+	if len(v) > 0 {
+		done = "true"
+	}
 
-	query := done
+	query := fmt.Sprintf("{\"query\":\"mutation updateTodo ($id:ID!,$text:String!,$done:Boolean!) {\\n  updateTodo(id:$id, input:{text:$text,done:$done}) {\\n    id\\n    text\\n    done\\n  }\\n}\",\"variables\":{\"id\":1,\"text\":\"%s\",\"done\":%s}}", test, done)
 
 	_, statusCode, err := util.ReqBackend(query)
 	if err != nil {

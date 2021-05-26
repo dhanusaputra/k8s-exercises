@@ -6,6 +6,7 @@ package graph
 import (
 	"context"
 	"fmt"
+	"sort"
 	"strconv"
 
 	"github.com/dhanusaputra/k8s-exercises/pkg/graph/generated"
@@ -87,6 +88,8 @@ func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
 		}
 		todos = append(todos, t)
 	}
+
+	sort.Slice(todos, func(i, j int) bool { return todos[i].ID < todos[j].ID })
 
 	return todos, nil
 }
