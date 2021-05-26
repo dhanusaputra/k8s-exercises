@@ -12,10 +12,12 @@ import (
 	"os"
 	"path/filepath"
 	"time"
+
+	"github.com/go-chi/chi/v5"
 )
 
 var (
-	client = &http.Client{Timeout: time.Second * 10}
+	httpClient = &http.Client{Timeout: time.Second * 10}
 )
 
 // GraphqlResponse ...
@@ -43,10 +45,13 @@ type GraphqlError struct {
 }
 
 func main() {
-	http.HandleFunc("/", handler)
-	http.HandleFunc("/submit", submitHandler)
+	r := chi.NewRouter()
 
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
+	r.HandleFunc("/", handler)
+	r.HandleFunc("/submit", submitHandler)
+	r.HandleFunc("/update/{id}", updateHandler)
+
+	r.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
 
 	log.Println("Starting server at port 3000")
 	log.Fatal(http.ListenAndServe(":3000", nil))
@@ -148,6 +153,13 @@ func submitHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
+func updateHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "not yet implemented", http.StatusNotImplemented)
+		return
+	}
+}
+
 func reqBackend(query string) (*GraphqlResponse, int, error) {
 	req, err := http.NewRequest(http.MethodPost, "http://backend-svc:8080/query", bytes.NewBuffer([]byte(query)))
 	if err != nil {
@@ -156,7 +168,7 @@ func reqBackend(query string) (*GraphqlResponse, int, error) {
 
 	req.Header.Add("Content-Type", "application/json")
 
-	resp, err := client.Do(req)
+	resp, err := httpClient.Do(req)
 	if err != nil {
 		return nil, http.StatusInternalServerError, err
 	}
