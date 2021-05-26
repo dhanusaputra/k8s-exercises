@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/dhanusaputra/k8s-exercises/web/app/handler"
 	"github.com/go-chi/chi/v5"
@@ -11,12 +12,31 @@ import (
 func main() {
 	r := chi.NewRouter()
 
-	r.HandleFunc("/", handler.View)
-	r.HandleFunc("/create", handler.CreateTodo)
-	r.HandleFunc("/update/{id}", handler.UpdateTodo)
+	r.Get("/", handler.View)
+	r.Post("/create", handler.CreateTodo)
+	r.Post("/update/{id}", handler.UpdateTodo)
 
-	r.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
+	fileServer(r, "/static/", http.Dir("./static"))
 
 	log.Println("Starting server at port 3000")
-	log.Fatal(http.ListenAndServe(":3000", nil))
+	log.Fatal(http.ListenAndServe(":3000", r))
+}
+
+func fileServer(r chi.Router, path string, root http.FileSystem) {
+	if strings.ContainsAny(path, "{}*") {
+		log.Fatal("fileServer does not permit any URL parameters")
+	}
+
+	if path != "/" && path[len(path)-1] != '/' {
+		r.Get(path, http.RedirectHandler(path+"/", 301).ServeHTTP)
+		path += "/"
+	}
+	path += "*"
+
+	r.Get(path, func(w http.ResponseWriter, r *http.Request) {
+		rctx := chi.RouteContext(r.Context())
+		pathPrefix := strings.TrimSuffix(rctx.RoutePattern(), "/*")
+		fs := http.StripPrefix(pathPrefix, http.FileServer(root))
+		fs.ServeHTTP(w, r)
+	})
 }

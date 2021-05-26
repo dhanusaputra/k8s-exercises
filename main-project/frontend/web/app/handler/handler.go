@@ -6,15 +6,11 @@ import (
 	"text/template"
 
 	"github.com/dhanusaputra/k8s-exercises/web/app/util"
+	"github.com/go-chi/chi/v5"
 )
 
 // View ...
 func View(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
-		http.Error(w, "method is not supported", http.StatusBadRequest)
-		return
-	}
-
 	if err := util.DownloadImageToVolume("https://picsum.photos/1200", "./static/test"); err != nil {
 		http.Error(w, fmt.Sprintf("failed when download image, err: %v", err), http.StatusInternalServerError)
 		return
@@ -43,11 +39,6 @@ func View(w http.ResponseWriter, r *http.Request) {
 
 // CreateTodo ...
 func CreateTodo(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
-		http.Error(w, "method is not supported", http.StatusBadRequest)
-		return
-	}
-
 	if err := r.ParseForm(); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -68,8 +59,17 @@ func CreateTodo(w http.ResponseWriter, r *http.Request) {
 
 // UpdateTodo ...
 func UpdateTodo(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
-		http.Error(w, "not yet implemented", http.StatusNotImplemented)
+	id := chi.URLParam(r, "id")
+
+	done := r.FormValue(id)
+
+	query := done
+
+	_, statusCode, err := util.ReqBackend(query)
+	if err != nil {
+		http.Error(w, err.Error(), statusCode)
 		return
 	}
+
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
