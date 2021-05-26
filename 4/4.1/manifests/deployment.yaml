@@ -55,3 +55,6 @@ spec:
       containers:
         - name: frontend
           image: PROJECT/IMAGE_FRONTEND
+          env:
+          - name: BACKEND_URL
+            value: "http://backend-svc:8080"
