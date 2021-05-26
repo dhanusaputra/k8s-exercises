@@ -59,10 +59,6 @@ func (r *mutationResolver) UpdateTodo(ctx context.Context, id string, modificati
 		return nil, fmt.Errorf("find multiple rows, ID: %s", id)
 	}
 
-	if updatedTodo == nil {
-		return nil, fmt.Errorf("cannot find ID, ID: %s", id)
-	}
-
 	if err := mapstructure.Decode(modifications, updatedTodo); err != nil {
 		return nil, err
 	}
