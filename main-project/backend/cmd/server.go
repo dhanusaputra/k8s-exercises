@@ -8,9 +8,9 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/dhanusaputra/k8s-exercises/pkg/db"
-	"github.com/dhanusaputra/k8s-exercises/pkg/graph"
-	"github.com/dhanusaputra/k8s-exercises/pkg/graph/generated"
+	"github.com/dhanusaputra/k8s-exercises/main-project/backend/pkg/db"
+	"github.com/dhanusaputra/k8s-exercises/main-project/backend/pkg/graph"
+	"github.com/dhanusaputra/k8s-exercises/main-project/backend/pkg/graph/generated"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	_ "github.com/lib/pq"

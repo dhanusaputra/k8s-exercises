@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"text/template"
 
-	"github.com/dhanusaputra/k8s-exercises/web/app/util"
+	"github.com/dhanusaputra/k8s-exercises/main-project/frontend/web/app/util"
 	"github.com/go-chi/chi/v5"
 )
 

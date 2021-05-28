@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/dhanusaputra/k8s-exercises/web/app/handler"
+	"github.com/dhanusaputra/k8s-exercises/main-project/frontend/web/app/handler"
 	"github.com/go-chi/chi/v5"
 )
 

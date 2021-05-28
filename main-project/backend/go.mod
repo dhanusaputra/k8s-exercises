@@ -1,4 +1,4 @@
-module github.com/dhanusaputra/k8s-exercises
+module github.com/dhanusaputra/k8s-exercises/main-project/backend
 
 go 1.13
 

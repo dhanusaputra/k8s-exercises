@@ -9,8 +9,8 @@ import (
 	"sort"
 	"strconv"
 
-	"github.com/dhanusaputra/k8s-exercises/pkg/graph/generated"
-	"github.com/dhanusaputra/k8s-exercises/pkg/graph/model"
+	"github.com/dhanusaputra/k8s-exercises/main-project/backend/pkg/graph/generated"
+	"github.com/dhanusaputra/k8s-exercises/main-project/backend/pkg/graph/model"
 	"github.com/mitchellh/mapstructure"
 )
 
