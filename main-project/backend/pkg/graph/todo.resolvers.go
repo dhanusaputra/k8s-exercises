@@ -11,6 +11,7 @@ import (
 
 	"github.com/dhanusaputra/k8s-exercises/main-project/backend/pkg/graph/generated"
 	"github.com/dhanusaputra/k8s-exercises/main-project/backend/pkg/graph/model"
+	"github.com/dhanusaputra/k8s-exercises/main-project/backend/pkg/util"
 	"github.com/mitchellh/mapstructure"
 )
 
@@ -32,6 +33,8 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input model.TodoInput
 		Text: input.Text,
 		Done: input.Done,
 	}
+
+	util.PublishNats("todo", todo)
 
 	return todo, nil
 }
@@ -96,6 +99,8 @@ func (r *mutationResolver) UpdateTodo(ctx context.Context, id string, modificati
 		Text: updatedTodo.Text,
 		Done: updatedTodo.Done,
 	}
+
+	util.PublishNats("todo", todo)
 
 	return todo, nil
 }

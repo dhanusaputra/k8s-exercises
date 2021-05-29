@@ -1,4 +1,4 @@
-package db
+package util
 
 import (
 	"database/sql"
@@ -10,8 +10,8 @@ import (
 
 var db *sql.DB
 
-// Init ...
-func Init() *sql.DB {
+// InitDB ...
+func InitDB() *sql.DB {
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s sslmode=disable",
 		"postgres-svc",
 		"5432",
@@ -48,8 +48,8 @@ func Init() *sql.DB {
 	return db
 }
 
-// Ping ...
-func Ping() error {
+// PingDB ...
+func PingDB() error {
 	if db == nil {
 		return errors.New("db is nil")
 	}

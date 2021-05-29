@@ -8,9 +8,9 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/dhanusaputra/k8s-exercises/main-project/backend/pkg/db"
 	"github.com/dhanusaputra/k8s-exercises/main-project/backend/pkg/graph"
 	"github.com/dhanusaputra/k8s-exercises/main-project/backend/pkg/graph/generated"
+	"github.com/dhanusaputra/k8s-exercises/main-project/backend/pkg/util"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	_ "github.com/lib/pq"
@@ -24,10 +24,13 @@ func main() {
 		port = defaultPort
 	}
 
-	dbObj := db.Init()
-	defer dbObj.Close()
+	db := util.InitDB()
+	defer db.Close()
 
-	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: graph.NewResolver(dbObj)}))
+	nc := util.InitNats()
+	defer nc.Close()
+
+	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: graph.NewResolver(db)}))
 
 	r := chi.NewRouter()
 
@@ -40,7 +43,7 @@ func main() {
 	r.Handle("/query", srv)
 
 	r.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
-		if err := db.Ping(); err != nil {
+		if err := util.PingDB(); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}

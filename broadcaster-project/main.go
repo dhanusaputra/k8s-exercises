@@ -1,16 +1,19 @@
 package main
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/nats-io/nats.go"
 )
 
 func main() {
-	nc, _ := nats.Connect(nats.DefaultURL)
+	nc, err := nats.Connect(nats.DefaultURL)
+  if err != nil {
+    log.Fatal(err)
+  }
   defer nc.Close()
 
 	nc.Subscribe("todo", func(m *nats.Msg) {
-		fmt.Printf("Received a message: %s\n", string(m.Data))
+		log.Printf("Received a message: %s\n", string(m.Data))
 	})
 }

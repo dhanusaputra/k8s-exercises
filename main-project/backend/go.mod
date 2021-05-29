@@ -10,6 +10,7 @@ require (
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/lib/pq v1.10.1
 	github.com/mitchellh/mapstructure v1.4.1
+	github.com/nats-io/nats.go v1.11.0
 	github.com/vektah/gqlparser/v2 v2.1.0
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 )

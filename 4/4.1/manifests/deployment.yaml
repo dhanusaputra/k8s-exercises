@@ -18,6 +18,9 @@ spec:
       containers:
         - name: backend
           image: PROJECT/IMAGE_BACKEND
+          env:
+          - name: NATS_URL
+            value: nats://my-nats:4222
           envFrom:
           - secretRef:
               name: postgres-secret
@@ -57,4 +60,4 @@ spec:
           image: PROJECT/IMAGE_FRONTEND
           env:
           - name: BACKEND_URL
-            value: "http://backend-svc:8080"
+            value: http://backend-svc:8080
