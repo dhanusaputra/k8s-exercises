@@ -11,4 +11,6 @@ images:
   newName: dhanusaputra/backend
 - name: PROJECT/IMAGE_FRONTEND
   newName: dhanusaputra/frontend
+- name: PROJECT/IMAGE_BROADCASTER
+  newName: dhanusaputra/broadcaster
 namespace: exercise

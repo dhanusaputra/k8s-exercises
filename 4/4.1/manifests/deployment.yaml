@@ -18,6 +18,10 @@ spec:
       containers:
         - name: backend
           image: PROJECT/IMAGE_BACKEND
+          resources:
+            limits:
+              cpu: "30m"
+              memory: "50Mi"
           env:
           - name: NATS_URL
             value: nats://my-nats:4222
@@ -58,6 +62,39 @@ spec:
       containers:
         - name: frontend
           image: PROJECT/IMAGE_FRONTEND
+          resources:
+            limits:
+              cpu: "30m"
+              memory: "50Mi"
           env:
           - name: BACKEND_URL
             value: http://backend-svc:8080
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: exercise
+  name: broadcaster-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: project
+      tier: broadcaster
+  template:
+    metadata:
+      labels:
+        app: project
+        tier: broadcaster
+    spec:
+      containers:
+        - name: broadcaster
+          image: PROJECT/IMAGE_BROADCASTER
+          resources:
+            limits:
+              cpu: "30m"
+              memory: "50Mi"
+          env:
+          - name: NATS_URL
+            value: nats://my-nats:4222

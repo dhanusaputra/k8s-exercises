@@ -6,6 +6,7 @@ package graph
 import (
 	"context"
 	"fmt"
+	"log"
 	"sort"
 	"strconv"
 
@@ -34,7 +35,9 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input model.TodoInput
 		Done: input.Done,
 	}
 
-	util.PublishNats("todo", todo)
+	if err := util.PublishNats("todo", todo); err != nil {
+		log.Println(err)
+	}
 
 	return todo, nil
 }
@@ -100,7 +103,9 @@ func (r *mutationResolver) UpdateTodo(ctx context.Context, id string, modificati
 		Done: updatedTodo.Done,
 	}
 
-	util.PublishNats("todo", todo)
+	if err := util.PublishNats("todo", todo); err != nil {
+		log.Println(err)
+	}
 
 	return todo, nil
 }

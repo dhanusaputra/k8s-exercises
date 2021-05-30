@@ -4,14 +4,12 @@ metadata:
   namespace: exercise
   name: backend-svc
 spec:
-  type: ClusterIP
+  clusterIP: None
   selector:
     app: project
     tier: backend
   ports:
     - port: 8080
-      protocol: TCP
-      targetPort: 8080
 
 ---
 apiVersion: v1

@@ -43,7 +43,7 @@ func InitDB() *sql.DB {
 		log.Fatal(err)
 	}
 
-	log.Println("successfully init db")
+	log.Println("db successfully init")
 
 	return db
 }
