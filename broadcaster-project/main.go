@@ -5,8 +5,8 @@ import (
 	"os"
 	"sync"
 
+	"github.com/dhanusaputra/k8s-exercises/broadcaster-project/util"
 	"github.com/nats-io/nats.go"
-  "github.com/dhanusaputra/k8s-exercises/broadcaster-project/util"
 )
 
 const defaultNatsURL = "my-nats:4222"
@@ -29,9 +29,9 @@ func main() {
 	if _, err := nc.Subscribe("todo", func(m *nats.Msg) {
 		defer wg.Done()
 		log.Printf("Received a message: %s\n", string(m.Data))
-    if err := util.SendMessage("test"); err != nil {
-      log.Fatal(err)
-    }
+		if err := util.SendMessage(string(m.Data)); err != nil {
+			log.Println(err)
+		}
 	}); err != nil {
 		log.Fatal(err)
 	}
