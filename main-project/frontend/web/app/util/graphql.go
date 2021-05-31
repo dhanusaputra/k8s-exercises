@@ -48,7 +48,7 @@ func ReqBackend(query string) (*GraphqlResponse, int, error) {
 		backendURL = defaultBackendURL
 	}
 
-	req, err := http.NewRequest(http.MethodPost, backendURL+"/query", bytes.NewBuffer([]byte(query)))
+  req, err := http.NewRequest(http.MethodPost, backendURL+"/query", bytes.NewBufferString(query))
 	if err != nil {
 		return nil, http.StatusInternalServerError, err
 	}
