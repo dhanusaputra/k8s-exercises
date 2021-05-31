@@ -4,6 +4,7 @@ resources:
 - manifests/namespace.yaml
 - manifests/postgres-sealedsecret.yaml
 - manifests/postgres-statefulset.yaml
+- manifests/broadcaster-sealedsecret.yaml
 - manifests/deployment.yaml
 - manifests/service.yaml
 images:

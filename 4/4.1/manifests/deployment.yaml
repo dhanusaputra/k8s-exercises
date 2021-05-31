@@ -98,3 +98,6 @@ spec:
           env:
           - name: NATS_URL
             value: nats://my-nats:4222
+          envFrom:
+          - secretRef:
+              name: broadcaster-secret
