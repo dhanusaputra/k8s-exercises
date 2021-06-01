@@ -1,7 +1,10 @@
 package util
 
 import (
+	"bytes"
+	"encoding/json"
 	"errors"
+	"fmt"
 	"log"
 	"os"
 
@@ -9,38 +12,46 @@ import (
 )
 
 var (
-	ec *nats.EncodedConn
+	nc *nats.Conn
 )
 
 const defaultNatsURL = "my-nats:4222"
 
 // InitNats ...
-func InitNats() *nats.EncodedConn {
+func InitNats() *nats.Conn {
 	url := os.Getenv("NATS_URL")
 	if url == "" {
 		url = defaultNatsURL
 	}
 
-	nc, err := nats.Connect(url)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	ec, err = nats.NewEncodedConn(nc, nats.JSON_ENCODER)
+	var err error
+	nc, err = nats.Connect(url)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	log.Println("nats successfully init")
 
-	return ec
+	return nc
 }
 
 // PublishNats ...
-func PublishNats(subj string, v interface{}) error {
-	if ec == nil {
-		return errors.New("ec is nil")
+func PublishNats(subj, action string, v interface{}) error {
+	if nc == nil {
+		return errors.New("nc is nil")
 	}
 
-	return ec.Publish(subj, v)
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	var prettyV bytes.Buffer
+	if err := json.Indent(&prettyV, b, "", "\t"); err != nil {
+		return err
+	}
+
+	msgB := append([]byte(fmt.Sprintf("A task was %sd\n", action)), prettyV.Bytes()...)
+
+	return nc.Publish(subj, msgB)
 }

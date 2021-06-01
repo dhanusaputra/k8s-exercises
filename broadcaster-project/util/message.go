@@ -28,15 +28,10 @@ func SendMessage(msg []byte) error {
 		return errors.New("webhookURL is empty")
 	}
 
-	var prettyMsg bytes.Buffer
-	if err := json.Indent(&prettyMsg, msg, "", "\t"); err != nil {
-		return err
-	}
-
 	msgFooter := fmt.Sprintf("\nbroadcasted by %s", podName)
 
 	p := &payload{
-		Content: string(prettyMsg.Bytes()) + msgFooter,
+		Content: string(msg) + msgFooter,
 	}
 
 	b, err := json.Marshal(p)

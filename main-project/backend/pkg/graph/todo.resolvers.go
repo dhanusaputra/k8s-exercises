@@ -35,7 +35,7 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input model.TodoInput
 		Done: input.Done,
 	}
 
-	if err := util.PublishNats("todo", todo); err != nil {
+	if err := util.PublishNats("todo", "create", todo); err != nil {
 		log.Println(err)
 	}
 
@@ -103,7 +103,7 @@ func (r *mutationResolver) UpdateTodo(ctx context.Context, id string, modificati
 		Done: updatedTodo.Done,
 	}
 
-	if err := util.PublishNats("todo", todo); err != nil {
+	if err := util.PublishNats("todo", "update", todo); err != nil {
 		log.Println(err)
 	}
 
