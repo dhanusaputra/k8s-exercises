@@ -15,11 +15,11 @@ var (
 	httpClient = &http.Client{Timeout: time.Second * 10}
 
 	webhookURL = os.Getenv("WEBHOOK_URL")
-  podName = os.Getenv("POD_NAME")
+	podName    = os.Getenv("POD_NAME")
 )
 
 type payload struct {
-  Content string `json:"content"`
+	Content string `json:"content"`
 }
 
 // SendMessage ...
@@ -28,15 +28,15 @@ func SendMessage(msg []byte) error {
 		return errors.New("webhookURL is empty")
 	}
 
-  var prettyMsg bytes.Buffer
-  if err := json.Indent(&prettyMsg, msg, "", "\t"); err != nil {
-    return err
-  }
+	var prettyMsg bytes.Buffer
+	if err := json.Indent(&prettyMsg, msg, "", "\t"); err != nil {
+		return err
+	}
 
-  msgFooter := fmt.Sprintf("\nbroadcasted by %s", podName)
+	msgFooter := fmt.Sprintf("\nbroadcasted by %s", podName)
 
 	p := &payload{
-		Content: string(prettyMsg.Bytes())+msgFooter,
+		Content: string(prettyMsg.Bytes()) + msgFooter,
 	}
 
 	b, err := json.Marshal(p)
