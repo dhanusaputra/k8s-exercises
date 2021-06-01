@@ -26,7 +26,7 @@ func main() {
 	wg := sync.WaitGroup{}
 	wg.Add(1)
 
-	if _, err := nc.Subscribe("todo", func(m *nats.Msg) {
+	if _, err := nc.QueueSubscribe("todo", "queue", func(m *nats.Msg) {
 		defer wg.Done()
 		if err := util.SendMessage(m.Data); err != nil {
 			log.Fatal(err)
