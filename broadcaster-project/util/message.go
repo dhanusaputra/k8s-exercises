@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
 	"time"
@@ -16,28 +15,34 @@ var (
 	httpClient = &http.Client{Timeout: time.Second * 10}
 
 	webhookURL = os.Getenv("WEBHOOK_URL")
+  podName = os.Getenv("POD_NAME")
 )
 
 type payload struct {
-	content string
+  Content string `json:"content"`
 }
 
 // SendMessage ...
-func SendMessage(msg string) error {
+func SendMessage(msg []byte) error {
 	if len(webhookURL) == 0 {
 		return errors.New("webhookURL is empty")
 	}
 
+  var prettyMsg bytes.Buffer
+  if err := json.Indent(&prettyMsg, msg, "", "\t"); err != nil {
+    return err
+  }
+
+  msgFooter := fmt.Sprintf("\nbroadcasted by %s", podName)
+
 	p := &payload{
-		content: msg,
+		Content: string(prettyMsg.Bytes())+msgFooter,
 	}
 
 	b, err := json.Marshal(p)
 	if err != nil {
 		return err
 	}
-
-	log.Println(string(b), webhookURL)
 
 	req, err := http.NewRequest(http.MethodPost, webhookURL, bytes.NewBuffer(b))
 	if err != nil {

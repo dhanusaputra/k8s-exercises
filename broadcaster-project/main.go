@@ -28,9 +28,8 @@ func main() {
 
 	if _, err := nc.Subscribe("todo", func(m *nats.Msg) {
 		defer wg.Done()
-		log.Printf("Received a message: %s\n", string(m.Data))
-		if err := util.SendMessage(string(m.Data)); err != nil {
-			log.Println(err)
+		if err := util.SendMessage(m.Data); err != nil {
+			log.Fatal(err)
 		}
 	}); err != nil {
 		log.Fatal(err)
